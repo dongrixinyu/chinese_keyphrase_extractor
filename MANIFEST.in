@@ -1,1 +1,2 @@
 include phrases_extractor/stop_word.txt
+include phrases_extractor/idf.txt
