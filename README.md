@@ -42,7 +42,7 @@ $ pip install .
 - 输入必须为 **utf-8** 编码字符串
 - 具体函数参数见代码
 ```
-import phrases_extractor as pe
+import phrases_extractor as pe  # 初次导入时会自动下载北大词性标注模型包
 
 text = '法国媒体最新披露，巴黎圣母院火灾当晚，第一次消防警报响起时，负责查验的保安找错了位置，因而可能贻误了救火的最佳时机。...'
 phrases = pe.extract_phrases(text)
