@@ -56,7 +56,7 @@ $ pip install .
 
 ```
 import ckpe    
-# 初次导入时会自动下载北大词性标注模型包  
+# 初次导入时会自动下载北大词性标注模型包，自动加载入内存（80M）  
 # 若由于网速原因下载失败，请参考 https://github.com/lancopku/pkuseg-python 如何安装下载 pkuseg 默认模型  
 # Speech Tagging Model Package of pkyseg will be downloaded automatically upon initial import  
 # If downloading fails due to network speed, please refer to how to install and download pkuseg default model in https://github.com/lancopku/pkuseg-python  
