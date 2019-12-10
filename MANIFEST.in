@@ -1,2 +1,7 @@
-include phrases_extractor/stop_word.txt
-include phrases_extractor/idf.txt
+include chinese_key_phrases_extractor/stop_word.txt
+include chinese_key_phrases_extractor/idf.txt
+include chinese_key_phrases_extractor/topic_word_weight.json
+include chinese_key_phrases_extractor/word_topic_weight.json
+include chinese_key_phrases_extractor/word_id.json
+include chinese_key_phrases_extractor/pos_combine_weights.json
+include chinese_key_phrases_extractor/records.txt

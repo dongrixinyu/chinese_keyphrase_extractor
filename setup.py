@@ -2,27 +2,24 @@
 
 from setuptools import setup
 
-# version 0.1.0: 使用 jieba 分词
-# version 0.2.0: 使用 pkuseg 分词，增加短语过滤规则
-
+# version 0.1.0: 使用 jieba 分词，利用 word 级别 tfidf 计算
+# version 0.2.0: 使用 pkuseg 分词，利用 word 级别 tfidf 计算，增加短语过滤规则
+# version 0.3.0: 使用 lda 主题模型，同时利用 word 级别 tfidf 信息，增加短语过滤规则
+# reference: Teneva N , Cheng W . Salience Rank: Efficient Keyphrase Extraction with Topic Modeling[C]// Proceedings of the 55th Annual Meeting of the Association for Computational Linguistics (Volume 2: Short Papers). 2017.
 
 # setup
-setup(name="phrases-extractor",
-      version="0.2.0",
-      url="https://github.com/dongrixinyu/phrases_extractor",
+setup(name="ckpe",
+      version="0.3.0",
+      url="https://github.com/dongrixinyu/chinese_key_phrases_extractor",
       author="dongrixinyu",
       author_email="dongrixinyu.89@163.com",
       
       py_modules=[],
       packages=[
-            "phrases_extractor",
+            "ckpe",
       ],
 
       include_package_data=True,
-      package_data={
-            '': ['*.dict']
-      },
-
       install_requires=[
           "pkuseg"
       ],
