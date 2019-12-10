@@ -10,7 +10,7 @@ from setuptools import setup
 # setup
 setup(name="ckpe",
       version="0.3.0",
-      url="https://github.com/dongrixinyu/chinese_key_phrases_extractor",
+      url="https://github.com/dongrixinyu/chinese_keyphrase_extractor",
       author="dongrixinyu",
       author_email="dongrixinyu.89@163.com",
       
