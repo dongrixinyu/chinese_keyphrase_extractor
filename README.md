@@ -101,6 +101,6 @@ print(key_phrases)
 ## 我的窝 My blog  
 
 如果觉得方便好用，请 follow 我一波：https://github.com/dongrixinyu  
-If you feel convenient and easy to use, please follow me: https://github.com/dongrixinyu
+If you feel this tool convenient and easy to use, please follow me: https://github.com/dongrixinyu
 
 
