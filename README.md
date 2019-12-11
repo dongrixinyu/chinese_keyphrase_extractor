@@ -1,7 +1,7 @@
 # chinese_keyphrase_extractor
 
 一个从 **中文自然语言文本**  中抽取 **关键短语** 的工具  
-A tool for **keyphrase extraction automatically** from **chinese natural language** text.
+A tool for **keyphrase extraction automatically** from **Chinese natural language** text.
 
 ## 应用场景 Application scenario
 
