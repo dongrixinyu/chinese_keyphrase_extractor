@@ -43,8 +43,9 @@ class ChineseKeyPhrasesExtractor(object):
         self.pos_exception = ['u', 'p', 'c', 'y', 'e', 'o']
         self.stricted_pos_name = ['a', 'n', 'j', 'nr', 'ns', 'nt', 'nx', 'nz', 
                                   'ad', 'an', 'vn', 'vd', 'vx']
-        self.redundent_pattern = re.compile(
-            r'[\d+|\.|\*|\(|\)|\n|\t|\r|\{|\}|\[|\]|\,|\-|\?|\!|\%|\/|\+|。|，|\;|\'|\"|？|！|；]')
+        self.redundent_strict_pattern = re.compile('[\*\|`\;:丨－]')  # 有一个字符即抛弃
+        self.redundent_loose_pattern = re.compile('[/\d\.\-:=a-z+,%]+')  # 全部是该字符即抛弃
+            #r'[\d+|\.|\*|\(|\)|\n|\t|\r|\{|\}|\[|\]|\,|\-|\?|\!|\%|\/|\+|。|，|\;|\'|\"|？|！|；]')
         
         self.extra_date_ptn = re.compile('\d{1,2}[月|日]')
         self.exception_char_ptn = re.compile(
@@ -101,10 +102,6 @@ class ChineseKeyPhrasesExtractor(object):
         self.topic_num = len(self.word_topic_weight)
         
         self._topic_prominence()  # 预计算主题突出度
-    
-    def _filter_stopwords(self, vocabulary):
-        return [(word, weight) for word, weight in vocabulary 
-                if word not in self.stop_words]
 
     def _load_idf(self):
         with open(self.idf_file_path, 'r', encoding='utf-8') as f:
@@ -229,7 +226,7 @@ class ChineseKeyPhrasesExtractor(object):
             for n in range(1, sen_length + 1):  # n-grams
                 for i in range(0, sen_length - n + 1):
                     candidate_phrase = sen_segs[i: i + n]
-                    
+
                     # 由于 pkuseg 的缺陷，日期被识别为 n 而非 t，故删除日期
                     res = self.extra_date_ptn.match(candidate_phrase[-1][0])
                     if res is not None:
@@ -246,6 +243,21 @@ class ChineseKeyPhrasesExtractor(object):
                     if not rule_flag:
                         continue
                     
+                    # 由于 pkuseg 的缺陷，会把一些杂质符号识别为 n、v、adj，故须删除
+                    redundent_flag = False
+                    for item in candidate_phrase:
+                        matched = self.redundent_strict_pattern.search(item[0])
+                        if matched is not None:
+                            redundent_flag = True
+                            break
+                        matched = self.redundent_loose_pattern.search(item[0])
+                        
+                        if matched is not None and matched.group() == item[0]:
+                            redundent_flag = True
+                            break
+                    if redundent_flag:
+                        continue
+                        
                     # 条件六：短语的权重需要乘上'词性权重'
                     if allow_pos_weight:
                         start_end_pos = None
