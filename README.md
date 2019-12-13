@@ -1,7 +1,7 @@
 # chinese_keyphrase_extractor
 
 一个从 **中文自然语言文本**  中抽取 **关键短语** 的工具  
-A tool for **keyphrase extraction automatically** from **chinese natural language** text.
+A tool for **keyphrase extraction automatically** from **Chinese natural language** text.
 
 ## 应用场景 Application scenario
 
@@ -97,7 +97,8 @@ print(ckpe.extract.__doc__)
 - Calculating the topic probability distribution of the text and the topic probability distribution of each candidate phrase by using the pre-trained LDA model to obtain the final weight  
 
 ## Reference  
-- reference: Teneva N , Cheng W . Salience Rank: Efficient Keyphrase Extraction with Topic Modeling[C]// Proceedings of the 55th Annual Meeting of the Association for Computational Linguistics (Volume 2: Short Papers). 2017.  
+- Teneva N , Cheng W . Salience Rank: Efficient Keyphrase Extraction with Topic Modeling[C]// Proceedings of the 55th Annual Meeting of the Association for Computational Linguistics (Volume 2: Short Papers). 2017.  
+- Liu Z , Huang W , Zheng Y , et al. Automatic Keyphrase Extraction via Topic Decomposition[C]// Proceedings of the 2010 Conference on Empirical Methods in Natural Language Processing, EMNLP 2010, 9-11 October 2010, MIT Stata Center, Massachusetts, USA, A meeting of SIGDAT, a Special Interest Group of the ACL. Association for Computational Linguistics, 2010.
 
 ## 我的窝 My blog  
 
