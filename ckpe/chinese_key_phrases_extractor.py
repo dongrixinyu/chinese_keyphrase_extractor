@@ -43,7 +43,7 @@ class ChineseKeyPhrasesExtractor(object):
         self.pos_exception = ['u', 'p', 'c', 'y', 'e', 'o']
         self.stricted_pos_name = ['a', 'n', 'j', 'nr', 'ns', 'nt', 'nx', 'nz', 
                                   'ad', 'an', 'vn', 'vd', 'vx']
-        self.redundent_strict_pattern = re.compile('[\*\|`\;:丨－]')  # 有一个字符即抛弃
+        self.redundent_strict_pattern = re.compile('[\*\|`\;:丨－\<\>]')  # 有一个字符即抛弃
         self.redundent_loose_pattern = re.compile('[/\d\.\-:=a-z+,%]+')  # 全部是该字符即抛弃
             #r'[\d+|\.|\*|\(|\)|\n|\t|\r|\{|\}|\[|\]|\,|\-|\?|\!|\%|\/|\+|。|，|\;|\'|\"|？|！|；]')
         
@@ -181,7 +181,7 @@ class ChineseKeyPhrasesExtractor(object):
         try:
             # step0: 清洗文本，去除杂质
             text = self._preprocessing_text(text)
-            
+
             # step1: 分句，使用北大的分词器 pkuseg 做分词和词性标注
             sentences_list = self._split_sentences(text)
             sentences_segs_list = list()
@@ -190,7 +190,7 @@ class ChineseKeyPhrasesExtractor(object):
                 sen_segs = self.seg.cut(sen)
                 sentences_segs_list.append(sen_segs)
                 counter_segs_list.extend(sen_segs)
-                
+
             # step2: 计算词频
             total_length = len(counter_segs_list)
             freq_dict = dict()
@@ -200,7 +200,7 @@ class ChineseKeyPhrasesExtractor(object):
                     freq_dict[word][1] += 1
                 else:
                     freq_dict.update({word: [pos, 1]})
-            
+
             # step3: 计算每一个词的权重
             sentences_segs_weights_list = list()
             for sen, sen_segs in zip(sentences_list, sentences_segs_list):
@@ -217,22 +217,22 @@ class ChineseKeyPhrasesExtractor(object):
                         weight = 0.0
                     sen_segs_weights.append(weight)
                 sentences_segs_weights_list.append(sen_segs_weights)
-            
+
             # step4: 通过一定规则，找到候选短语集合，以及其权重
             candidate_phrases_dict = dict()
             for sen_segs, sen_segs_weights in zip(
                 sentences_segs_list, sentences_segs_weights_list):
                 sen_length = len(sen_segs)
-                
+
                 for n in range(1, sen_length + 1):  # n-grams
                     for i in range(0, sen_length - n + 1):
                         candidate_phrase = sen_segs[i: i + n]
-    
+
                         # 由于 pkuseg 的缺陷，日期被识别为 n 而非 t，故删除日期
                         res = self.extra_date_ptn.match(candidate_phrase[-1][0])
                         if res is not None:
                             continue
-                        
+
                         # 找短语过程中需要进行过滤，分为严格、宽松规则
                         if not stricted_pos:  
                             rule_flag = self._loose_candidate_phrases_rules(
@@ -243,7 +243,7 @@ class ChineseKeyPhrasesExtractor(object):
                                 candidate_phrase)
                         if not rule_flag:
                             continue
-                        
+
                         # 由于 pkuseg 的缺陷，会把一些杂质符号识别为 n、v、adj，故须删除
                         redundent_flag = False
                         for item in candidate_phrase:
@@ -252,13 +252,13 @@ class ChineseKeyPhrasesExtractor(object):
                                 redundent_flag = True
                                 break
                             matched = self.redundent_loose_pattern.search(item[0])
-                            
+
                             if matched is not None and matched.group() == item[0]:
                                 redundent_flag = True
                                 break
                         if redundent_flag:
                             continue
-                            
+
                         # 条件六：短语的权重需要乘上'词性权重'
                         if allow_pos_weight:
                             start_end_pos = None
@@ -269,14 +269,15 @@ class ChineseKeyPhrasesExtractor(object):
                             pos_weight = self.pos_combine_weights_dict.get(start_end_pos, 1.0)
                         else:
                             pos_weight = 1.0
-                            
+
                         # 条件七：短语的权重需要乘上 '长度权重'
                         if allow_length_weight:
                             length_weight = self.phrases_length_control_dict.get(
-                                len(sen_segs_weights[i: i + n]), self.phrases_length_control_none)
+                                len(sen_segs_weights[i: i + n]), 
+                                self.phrases_length_control_none)
                         else:
                             length_weight = 1.0
-                            
+
                         # 条件八：短语的权重需要加上`主题突出度权重`
                         if allow_topic_weight:
                             topic_weight = 0.0
@@ -286,23 +287,27 @@ class ChineseKeyPhrasesExtractor(object):
                             topic_weight = topic_weight / len(candidate_phrase)
                         else:
                             topic_weight = 0.0
-                            
+
                         candidate_phrase_weight = sum(sen_segs_weights[i: i + n])
                         candidate_phrase_weight *= length_weight * pos_weight
                         candidate_phrase_weight += topic_weight * topic_theta
-                        
+
                         candidate_phrase_string = ''.join([tup[0] for tup in candidate_phrase])
                         if candidate_phrase_string not in candidate_phrases_dict:
                             candidate_phrases_dict.update(
-                                {candidate_phrase_string: [candidate_phrase, candidate_phrase_weight]})
-            
+                                {candidate_phrase_string: [candidate_phrase, 
+                                                           candidate_phrase_weight]})
+
             # step5: 将 overlaping 过量的短语进行去重过滤
-            candidate_phrases_list = sorted(candidate_phrases_dict.items(), key=lambda item: len(item[1][0]), reverse=True)
+            # 尝试了依据权重高低，将较短的短语替代重复了的较长的短语，但效果不好，故删去
+            candidate_phrases_list = sorted(
+                candidate_phrases_dict.items(), 
+                key=lambda item: len(item[1][0]), reverse=True)
             de_duplication_candidate_phrases_list = list([candidate_phrases_list[0]])
-            
+
             for item in candidate_phrases_list[1:]:
                 no_duplication_flag = False
-                for de_du_item in de_duplication_candidate_phrases_list:
+                for idx, de_du_item in enumerate(de_duplication_candidate_phrases_list):
                     common_num = len(set(item[1][0]) & set(de_du_item[1][0]))
                     if common_num >= min(len(set(item[1][0])), len(set(de_du_item[1][0]))) / 2.0:
                         # 这里影响了短语的长度，造成 4 token 组成的短语数量太少
@@ -311,16 +316,16 @@ class ChineseKeyPhrasesExtractor(object):
                         break
                 if not no_duplication_flag:
                     de_duplication_candidate_phrases_list.append(item)
-                    
+
             # step6: 按重要程度进行排序，选取 top_k 个
             candidate_phrases_list = sorted(de_duplication_candidate_phrases_list, 
                                             key=lambda item: item[1][1], reverse=True)
-            
+
             if with_weight:
                 final_res = [(item[0], item[1][1]) for item in candidate_phrases_list[:top_k]]
             else:
                 final_res = [item[0] for item in candidate_phrases_list[:top_k]]
-                
+
             return final_res
         except Exception as e:
             print('the text is not chinese.')
@@ -384,7 +389,7 @@ class ChineseKeyPhrasesExtractor(object):
                 if item[1] in ['v', 'vn', 'vd', 'vx']:
                     return False
             elif idx == len(candidate_phrase) - 1:  # 结束词汇必须是名词
-                if item[1] in ['a', 'ad', 'vn', 'vd', 'vx', 'v']:
+                if item[1] in ['a', 'ad', 'vd', 'vx', 'v']:
                     return False
 
         # 条件四：短语中不可以有停用词
