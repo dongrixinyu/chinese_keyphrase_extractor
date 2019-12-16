@@ -45,8 +45,6 @@ class ChineseKeyPhrasesExtractor(object):
                                   'ad', 'an', 'vn', 'vd', 'vx']
         self.redundent_strict_pattern = re.compile('[\*\|`\;:丨－\<\>]')  # 有一个字符即抛弃
         self.redundent_loose_pattern = re.compile('[/\d\.\-:=a-z+,%]+')  # 全部是该字符即抛弃
-            #r'[\d+|\.|\*|\(|\)|\n|\t|\r|\{|\}|\[|\]|\,|\-|\?|\!|\%|\/|\+|。|，|\;|\'|\"|？|！|；]')
-        
         self.extra_date_ptn = re.compile('\d{1,2}[月|日]')
         self.exception_char_ptn = re.compile(
             '[^ ¥～「」％－＋\n\u3000\u4e00-\u9fa5\u0021-\u007e'
@@ -159,11 +157,11 @@ class ChineseKeyPhrasesExtractor(object):
         sentences = [sen for sen in tmp_list if sen != '']
         return sentences
     
-    def extract_key_phrases(self, text, top_k=5, with_weight=False,
-                           func_word_num=1, stop_word_num=0, 
-                           topic_theta=0.5, allow_pos_weight=True,
-                           stricted_pos=True, allow_length_weight=True,
-                           allow_topic_weight=True):
+    def extract_keyphrase(self, text, top_k=5, with_weight=False,
+                          func_word_num=1, stop_word_num=0, 
+                          topic_theta=0.5, allow_pos_weight=True,
+                          stricted_pos=True, allow_length_weight=True,
+                          allow_topic_weight=True):
         """
         抽取一篇文本的关键短语
         :param text: utf-8 编码中文文本

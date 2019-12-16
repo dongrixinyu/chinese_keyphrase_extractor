@@ -56,13 +56,15 @@ $ pip install .
 
 ```
 import ckpe    
+
+ckpe_obj = ckpe.ckpe()
 # 初次导入时会自动下载北大词性标注模型包，自动加载入内存（50M）  
 # 若由于网速原因下载失败，请参考 https://github.com/lancopku/pkuseg-python 如何安装下载 pkuseg 默认模型  
 # Speech Tagging Model Package of pkyseg will be downloaded automatically upon initial import  
 # If downloading fails due to network speed, please refer to how to install and download pkuseg default model in https://github.com/lancopku/pkuseg-python  
 
 text = '法国媒体最新披露，巴黎圣母院火灾当晚，第一次消防警报响起时，负责查验的保安找错了位置，因而可能贻误了救火的最佳时机。...'
-key_phrases = ckpe.extract(text)
+key_phrases = ckpe_obj.extract_keyphrase(text)
 print(key_phrases)
 print(ckpe.extract.__doc__)
 ```
@@ -95,6 +97,11 @@ print(ckpe.extract.__doc__)
     - Phrase repetition calculation is added  
     - Provide only noun phrases extraction parameters  
 - Calculating the topic probability distribution of the text and the topic probability distribution of each candidate phrase by using the pre-trained LDA model to obtain the final weight  
+
+## TODO
+- pkuseg 分词器造成的错误，如把时间识别为名词，数字识别为人名等
+- stopwords 表中一些词汇既可以做实词，又可以做虚词，如“本”，“类”，造成错误
+- 规则过滤不完善造成的错误，或过滤过强造成的漏选
 
 ## Reference  
 - Teneva N , Cheng W . Salience Rank: Efficient Keyphrase Extraction with Topic Modeling[C]// Proceedings of the 55th Annual Meeting of the Association for Computational Linguistics (Volume 2: Short Papers). 2017.  
