@@ -66,7 +66,7 @@ ckpe_obj = ckpe.ckpe()
 text = '法国媒体最新披露，巴黎圣母院火灾当晚，第一次消防警报响起时，负责查验的保安找错了位置，因而可能贻误了救火的最佳时机。...'
 key_phrases = ckpe_obj.extract_keyphrase(text)
 print(key_phrases)
-print(ckpe.extract.__doc__)
+print(ckpe_obj.extract_keyphrase.__doc__)
 ```
 
 ## 新版 3.0 New Version 3.0
