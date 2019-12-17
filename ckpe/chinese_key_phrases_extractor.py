@@ -161,7 +161,8 @@ class ChineseKeyPhrasesExtractor(object):
                           func_word_num=1, stop_word_num=0, 
                           topic_theta=0.5, allow_pos_weight=True,
                           stricted_pos=True, allow_length_weight=True,
-                          allow_topic_weight=True):
+                          allow_topic_weight=True,
+                          remove_phrases_list=None):
         """
         抽取一篇文本的关键短语
         :param text: utf-8 编码中文文本
@@ -174,6 +175,7 @@ class ChineseKeyPhrasesExtractor(object):
         :param allow_pos_weight: (bool) 考虑词性权重，即某些词性组合的短语首尾更倾向成为关键短语
         :param allow_length_weight: (bool) 考虑词性权重，即 token 长度为 2~5 的短语倾向成为关键短语
         :param allow_topic_weight: (bool) 考虑主题突出度，它有助于过滤与主题无关的短语（如日期等）
+        :param remove_phrases_list: (list) 将某些不想要的短语剔除，使其不出现在最终结果中
         :return: 关键短语及其权重
         """ 
         try:
@@ -225,12 +227,12 @@ class ChineseKeyPhrasesExtractor(object):
                 for n in range(1, sen_length + 1):  # n-grams
                     for i in range(0, sen_length - n + 1):
                         candidate_phrase = sen_segs[i: i + n]
-
+                        
                         # 由于 pkuseg 的缺陷，日期被识别为 n 而非 t，故删除日期
                         res = self.extra_date_ptn.match(candidate_phrase[-1][0])
                         if res is not None:
                             continue
-
+                        
                         # 找短语过程中需要进行过滤，分为严格、宽松规则
                         if not stricted_pos:  
                             rule_flag = self._loose_candidate_phrases_rules(
@@ -289,13 +291,16 @@ class ChineseKeyPhrasesExtractor(object):
                         candidate_phrase_weight = sum(sen_segs_weights[i: i + n])
                         candidate_phrase_weight *= length_weight * pos_weight
                         candidate_phrase_weight += topic_weight * topic_theta
-
+                        
                         candidate_phrase_string = ''.join([tup[0] for tup in candidate_phrase])
+                        if remove_phrases_list is not None:
+                            if candidate_phrase_string in remove_phrases_list:
+                                continue
                         if candidate_phrase_string not in candidate_phrases_dict:
                             candidate_phrases_dict.update(
                                 {candidate_phrase_string: [candidate_phrase, 
                                                            candidate_phrase_weight]})
-
+                            
             # step5: 将 overlaping 过量的短语进行去重过滤
             # 尝试了依据权重高低，将较短的短语替代重复了的较长的短语，但效果不好，故删去
             candidate_phrases_list = sorted(
@@ -326,7 +331,7 @@ class ChineseKeyPhrasesExtractor(object):
 
             return final_res
         except Exception as e:
-            print('the text is not chinese.')
+            print('the text is not chinese. \n{}'.format(e))
             return []
 
     def _loose_candidate_phrases_rules(self, candidate_phrase, 
