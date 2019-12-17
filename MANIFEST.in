@@ -2,6 +2,5 @@ include ckpe/stop_word.txt
 include ckpe/idf.txt
 include ckpe/topic_word_weight.json
 include ckpe/word_topic_weight.json
-include ckpe/word_id.json
 include ckpe/pos_combine_weights.json
 include ckpe/records.txt
