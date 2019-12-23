@@ -338,8 +338,9 @@ class ChineseKeyPhrasesExtractor(object):
             for item in candidate_phrases_list:
                 sim_ratio = self._mmr_similarity(
                     item, de_duplication_candidate_phrases_list)
-                item[1][1] = (1 - sim_ratio) * item[1][1]
-                de_duplication_candidate_phrases_list.append(item)
+                if sim_ratio != 1:
+                    item[1][1] = (1 - sim_ratio) * item[1][1]
+                    de_duplication_candidate_phrases_list.append(item)
 
             # step6: 按重要程度进行排序，选取 top_k 个
             candidate_phrases_list = sorted(de_duplication_candidate_phrases_list, 
