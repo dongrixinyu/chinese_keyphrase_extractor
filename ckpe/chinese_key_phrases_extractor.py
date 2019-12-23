@@ -254,12 +254,12 @@ class ChineseKeyPhrasesExtractor(object):
                 for n in range(1, sen_length + 1):  # n-grams
                     for i in range(0, sen_length - n + 1):
                         candidate_phrase = sen_segs[i: i + n]
-                        
+
                         # 由于 pkuseg 的缺陷，日期被识别为 n 而非 t，故删除日期
                         res = self.extra_date_ptn.match(candidate_phrase[-1][0])
                         if res is not None:
                             continue
-                        
+
                         # 找短语过程中需要进行过滤，分为严格、宽松规则
                         if not stricted_pos:  
                             rule_flag = self._loose_candidate_phrases_rules(
@@ -318,7 +318,7 @@ class ChineseKeyPhrasesExtractor(object):
                         candidate_phrase_weight = sum(sen_segs_weights[i: i + n])
                         candidate_phrase_weight *= length_weight * pos_weight
                         candidate_phrase_weight += topic_weight * topic_theta
-                        
+
                         candidate_phrase_string = ''.join([tup[0] for tup in candidate_phrase])
                         if remove_phrases_list is not None:
                             if candidate_phrase_string in remove_phrases_list:
@@ -327,40 +327,49 @@ class ChineseKeyPhrasesExtractor(object):
                             candidate_phrases_dict.update(
                                 {candidate_phrase_string: [candidate_phrase, 
                                                            candidate_phrase_weight]})
-                            
+
             # step5: 将 overlaping 过量的短语进行去重过滤
             # 尝试了依据权重高低，将较短的短语替代重复了的较长的短语，但效果不好，故删去
             candidate_phrases_list = sorted(
                 candidate_phrases_dict.items(), 
                 key=lambda item: len(item[1][0]), reverse=True)
-            de_duplication_candidate_phrases_list = list([candidate_phrases_list[0]])
 
-            for item in candidate_phrases_list[1:]:
-                no_duplication_flag = False
-                for idx, de_du_item in enumerate(de_duplication_candidate_phrases_list):
-                    common_num = len(set(item[1][0]) & set(de_du_item[1][0]))
-                    if common_num >= min(len(set(item[1][0])), len(set(de_du_item[1][0]))) / 2.0:
-                        # 这里影响了短语的长度，造成 4 token 组成的短语数量太少
-                        # 重复度较高的短语进行过滤，不再进入候选序列中
-                        no_duplication_flag = True
-                        break
-                if not no_duplication_flag:
-                    de_duplication_candidate_phrases_list.append(item)
+            de_duplication_candidate_phrases_list = list()
+            for item in candidate_phrases_list:
+                sim_ratio = self._mmr_similarity(
+                    item, de_duplication_candidate_phrases_list)
+                item[1][1] = (1 - sim_ratio) * item[1][1]
+                de_duplication_candidate_phrases_list.append(item)
 
             # step6: 按重要程度进行排序，选取 top_k 个
             candidate_phrases_list = sorted(de_duplication_candidate_phrases_list, 
                                             key=lambda item: item[1][1], reverse=True)
 
             if with_weight:
-                final_res = [(item[0], item[1][1]) for item in candidate_phrases_list[:top_k]]
+                final_res = [(item[0], item[1][1]) for item in candidate_phrases_list[:top_k]
+                             if item[1][1] > 0]
             else:
-                final_res = [item[0] for item in candidate_phrases_list[:top_k]]
+                final_res = [item[0] for item in candidate_phrases_list[:top_k]
+                             if item[1][1] > 0]
 
             return final_res
         except Exception as e:
-            print('the text is not chinese. \n{}'.format(e))
+            print('the text is not legal. \n{}'.format(e))
             return []
 
+    def _mmr_similarity(self, candidate_item, 
+                        de_duplication_candidate_phrases_list):
+        ''' 计算 mmr 相似度，用于考察信息量 '''
+        sim_ratio = 0.0
+        candidate_info = set([item[0] for item in candidate_item[1][0]])
+        
+        for de_du_item in de_duplication_candidate_phrases_list:
+            no_info = set([item[0] for item in de_du_item[1][0]])
+            common_part = candidate_info & no_info
+            if sim_ratio < len(common_part) / len(candidate_info):
+                sim_ratio = len(common_part) / len(candidate_info)
+        return sim_ratio
+        
     def _loose_candidate_phrases_rules(self, candidate_phrase, 
                                        func_word_num=1, stop_word_num=0):
         ''' 按照宽松规则筛选候选短语，对词性和停用词宽松 '''
