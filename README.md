@@ -5,6 +5,7 @@ A tool for **keyphrase extraction automatically** from **Chinese natural languag
 
 ## 应用场景 Application scenario
 
+
 - 在很多关键词提取任务中，使用tfidf、textrank等方法提取得到的仅仅是若干零碎词汇。  
 - 这样的零碎词汇无法真正的表达文章的原本含义，我们并不想要它。  
 - In many keyword extraction tasks, only a few fragmentary words are extracted when using tfidf, textrank and other methods.
@@ -24,6 +25,12 @@ For example:
 >>> phrases = ['俄罗斯克里姆林宫', '邀请金正恩访俄', '最高司令官金正恩', 
                '朝方转交普京', '举行会谈']
 ```
+
+- 除此之外，有时产品和客户给定了一些词汇列表，比如化工经营业务词汇“聚氯乙烯”、“塑料”、“切割”、“金刚石”等。想要找到跟这些词汇相关的短语
+- 使用本工具即可方便地实现该功能。
+
+
+
 
 ## 功能介绍 Function introduction
 

@@ -13,7 +13,7 @@ import math
 import pkuseg
 
 import numpy as np
-        
+
 
 class ChineseKeyPhrasesExtractor(object):
     """
@@ -31,7 +31,8 @@ class ChineseKeyPhrasesExtractor(object):
     
     使用方法为：
     >>> import ckpe
-    >>> key_phrases = ckpe.extract(text)
+    >>> ckpe_obj = ckpe.ckpe()
+    >>> key_phrases = ckpe_obj.extract_keyphrase(text)
     
     """
     def __init__(self, ):
@@ -164,11 +165,13 @@ class ChineseKeyPhrasesExtractor(object):
                           allow_topic_weight=True,
                           without_person_name=False,
                           without_location_name=False,
-                          remove_phrases_list=None):
+                          remove_phrases_list=None,
+                          remove_words_list=None,
+                          specified_words=dict(), bias=None):
         """
         抽取一篇文本的关键短语
         :param text: utf-8 编码中文文本
-        :param top_k: 选取多少个关键短语返回，默认为 5
+        :param top_k: 选取多少个关键短语返回，默认为 5，若为 -1 返回所有短语
         :param with_weight: 指定返回关键短语是否需要短语权重
         :param func_word_num: 允许短语中出现的虚词个数，stricted_pos 为 True 时无效
         :param stop_word_num: 允许短语中出现的停用词个数，stricted_pos 为 True 时无效
@@ -180,6 +183,9 @@ class ChineseKeyPhrasesExtractor(object):
         :param without_person_name: (bool) 决定是否剔除短语中的人名
         :param without_location_name: (bool) 决定是否剔除短语中的地名
         :param remove_phrases_list: (list) 将某些不想要的短语剔除，使其不出现在最终结果中
+        :param remove_words_list: (list) 将某些不想要的词剔除，使包含该词的短语不出现在最终结果中
+        :param specified_words: (dict) 行业名词:词频，若不为空，则仅返回包含该词的短语
+        :param bias: (int|float) 若指定 specified_words，则可选择定义权重增加值
         :return: 关键短语及其权重
         """ 
         try:
@@ -238,8 +244,16 @@ class ChineseKeyPhrasesExtractor(object):
                         if word in self.stop_words:  # 停用词权重为 0
                             weight = 0.0
                         else:
-                            weight = freq_dict[word][1] * self.idf_dict.get(
-                                word, self.median_idf) / total_length
+                            if word in specified_words:  # 为词计算权重
+                                if bias is None:
+                                    weight = freq_dict[word][1] * self.idf_dict.get(
+                                        word, self.median_idf) / total_length + 1 / specified_words[word]
+                                else:
+                                    weight = freq_dict[word][1] * self.idf_dict.get(
+                                        word, self.median_idf) / total_length + bias
+                            else:
+                                weight = freq_dict[word][1] * self.idf_dict.get(
+                                    word, self.median_idf) / total_length
                     else:
                         weight = 0.0
                     sen_segs_weights.append(weight)
@@ -285,6 +299,26 @@ class ChineseKeyPhrasesExtractor(object):
                                 break
                         if redundent_flag:
                             continue
+                            
+                        # 如果短语中包含了某些不想要的词，则跳过
+                        if remove_words_list is not None:
+                            unwanted_phrase_flag = False
+                            for item in candidate_phrase:
+                                if item[0] in remove_words_list:
+                                    unwanted_phrase_flag = True
+                                    break
+                            if unwanted_phrase_flag:
+                                continue
+
+                        # 如果短语中没有一个 token 存在于指定词汇中，则跳过
+                        if specified_words != dict():
+                            with_specified_words_flag = False
+                            for item in candidate_phrase:
+                                if item[0] in specified_words:
+                                    with_specified_words_flag = True
+                                    break
+                            if not with_specified_words_flag:
+                                continue
 
                         # 条件六：短语的权重需要乘上'词性权重'
                         if allow_pos_weight:
@@ -347,13 +381,21 @@ class ChineseKeyPhrasesExtractor(object):
                                             key=lambda item: item[1][1], reverse=True)
 
             if with_weight:
-                final_res = [(item[0], item[1][1]) for item in candidate_phrases_list[:top_k]
-                             if item[1][1] > 0]
+                if top_k != -1:
+                    final_res = [(item[0], item[1][1]) for item in candidate_phrases_list[:top_k]
+                                 if item[1][1] > 0]
+                else:
+                    final_res = [(item[0], item[1][1]) for item in candidate_phrases_list
+                                 if item[1][1] > 0]
             else:
-                final_res = [item[0] for item in candidate_phrases_list[:top_k]
-                             if item[1][1] > 0]
-
+                if top_k != -1:
+                    final_res = [item[0] for item in candidate_phrases_list[:top_k]
+                                 if item[1][1] > 0]
+                else:
+                    final_res = [item[0] for item in candidate_phrases_list
+                                 if item[1][1] > 0]
             return final_res
+
         except Exception as e:
             print('the text is not legal. \n{}'.format(e))
             return []
