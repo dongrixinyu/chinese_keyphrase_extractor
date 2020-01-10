@@ -139,9 +139,9 @@ class ChineseKeyPhrasesExtractor(object):
     def _preprocessing_text(self, text):
         ''' 使用预处理函数去除文本中的各种杂质 '''
         # 去除中文的异常字符
-        self.exception_char_ptn.sub('', text)
+        text = self.exception_char_ptn.sub('', text)
         # 去除中文的冗余字符
-        self.redundant_char_ptn.sub('', text)
+        text = self.redundant_char_ptn.sub('', text)
         # 去除文本中的各种括号
         length = len(text)
         while True:
