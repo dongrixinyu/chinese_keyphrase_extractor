@@ -30,7 +30,7 @@ For example:
 #### 2.扩展相关短语词汇
 
 - 有时产品和客户给定了一些词汇列表，比如化工经营业务词汇“聚氯乙烯”、“塑料”、“切割”、“金刚石”等。想要找到跟这些词汇相关的短语。
-- 在做**NER命名实体识别任务**的时候，我们需要将已有的类型词汇做扩充，如“机构”类别，进而使用词典进行匹配标注。
+- 在做**NER命名实体识别任务**的时候，我们需要从文本中，将已有的类型词汇做扩充，如“机构”类别，但我们仅知道机构的一些特征，如常以“局”、“法院”、“办公室”等特征词结尾。
 - 在下面的使用样例中，给出了上述两种需求的扩展短语识别的方法。
 
 ## 功能介绍 Function introduction
@@ -77,22 +77,16 @@ print(key_phrases)
 print(ckpe_obj.extract_keyphrase.__doc__)
 ```
 
-##### 1.扩展类型短语
+##### 2.扩展类型短语
 ```
-import ckpe    
-
-ckpe_obj = ckpe.ckpe()
 text = '聚氯乙烯树脂、塑料制品、切割工具、人造革、人造金刚石、农药（不含危险化学品）、针纺织品自产自销。...'
 word_dict = {'聚氯乙烯': 1, '塑料': 1, '切割': 1, '金刚石': 1}  # 词汇: 词频（词频若未知可全设 1）
 key_phrases = ckpe_obj.extract_keyphrase(text, top_k=-1, specified_words=word_dict)
 print(key_phrases)
 ```
 
-##### 1.NER任务的短语扩充
+##### 3.NER任务的短语扩充
 ```
-import ckpe    
-
-ckpe_obj = ckpe.ckpe()
 text = '国务院下发通知，山西省法院、陕西省检察院、四川省法院、成都市教育局。...'
 word_dict = {'局': 1, '国务院': 1, '检察院': 1, '法院': 1}
 key_phrases = ckpe_obj.extract_keyphrase(text, top_k=-1, specified_words=word_dict, 
