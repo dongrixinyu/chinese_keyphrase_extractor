@@ -1,7 +1,7 @@
 # chinese_keyphrase_extractor
 
 一个从 **中文自然语言文本**  中抽取 **关键短语** 的工具  
-A tool for **keyphrase extraction automatically** from **Chinese natural language** text.
+A tool for automatic **keyphrase extraction** from **Chinese** text.
 
 ## 应用场景 Application scenario
 
@@ -18,9 +18,9 @@ For example:
 >>> keywords = ['俄罗斯', '朝鲜', '普京', '金正恩', '俄方']
 ```
 
-- 在很多时候，我们往往需要更细化的短语描述，来作为文本的关键信息展示。这样的需求在生成词云、提供摘要阅读、关键信息检索等任务中都非常重要。   
-- In many cases, we often need more detailed phrase descriptions to display the key information of the text. Such requirements, namely keyphrases extraction, are very important in generating word cloud, providing abstract reading, key information retrieval and other tasks.  
-例如：  
+- 我们往往需要更细化的短语描述，来作为文本的关键信息展示。这样的需求在生成词云、提供摘要阅读、关键信息检索等任务中都非常重要。   
+- We often need more detailed phrase descriptions to display the key information of the text. Such requirements, namely keyphrases extraction, are very important in generating word cloud, providing abstract reading, key information retrieval and other tasks.  
+例如：
 For example:  
 ```
 >>> phrases = ['俄罗斯克里姆林宫', '邀请金正恩访俄', '最高司令官金正恩', 
@@ -49,7 +49,7 @@ In order to solve the above problem, I developed a keyphrase extractor based on 
 
 ```
 $ git clone https://github.com/dongrixinyu/chinese_keyphrase_extractor
-$ cd ~/chinese_keyphrase_extractor
+$ cd ./chinese_keyphrase_extractor
 $ pip install .
 ```
 
@@ -59,7 +59,7 @@ $ pip install .
 - 输入必须为 **utf-8** 编码字符串  
 - 具体函数参数见代码  
 - Input must be **utf-8** encoding string  
-- See code for specific function parameters  
+- Check code for specific function parameters  
 
 ##### 1.抽取关键短语
 ```
@@ -112,7 +112,7 @@ print(key_phrases)
     - 短语中不可出现超过1个虚词  
     - 短语的两端 token 不可是虚词和停用词  
     - 短语中停用词数量不可以超过规定个数  
-    - 短语重复度计算添加其中  
+    - 短语重复度计算 MMR 添加其中  
     - 提供仅抽取名词短语功能  
 - 使用预训练好的 LDA 模型，计算文本的主题概率分布，以及每一个候选短语的主题概率分布，得到最终权重  
 - Firstly do word segmentation and part of speech tagging based on pkuseg tool, then use word level tfidf to calculate the keyword weight of the text.  
