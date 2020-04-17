@@ -160,6 +160,7 @@ class ChineseKeyPhrasesExtractor(object):
     
     def extract_keyphrase(self, text, top_k=5, with_weight=False,
                           func_word_num=1, stop_word_num=0, 
+                          max_phrase_len=25,
                           topic_theta=0.5, allow_pos_weight=True,
                           stricted_pos=True, allow_length_weight=True,
                           allow_topic_weight=True,
@@ -175,6 +176,7 @@ class ChineseKeyPhrasesExtractor(object):
         :param with_weight: 指定返回关键短语是否需要短语权重
         :param func_word_num: 允许短语中出现的虚词个数，stricted_pos 为 True 时无效
         :param stop_word_num: 允许短语中出现的停用词个数，stricted_pos 为 True 时无效
+        :param max_phrase_len: 允许短语的最长长度，默认为 25 个字符
         :param topic_theta: 主题权重的权重调节因子，默认0.5，范围（0~无穷）
         :param stricted_pos: (bool) 为 True 时仅允许名词短语出现
         :param allow_pos_weight: (bool) 考虑词性权重，即某些词性组合的短语首尾更倾向成为关键短语
@@ -277,11 +279,12 @@ class ChineseKeyPhrasesExtractor(object):
                         # 找短语过程中需要进行过滤，分为严格、宽松规则
                         if not stricted_pos:  
                             rule_flag = self._loose_candidate_phrases_rules(
-                                candidate_phrase, func_word_num=func_word_num, 
+                                candidate_phrase, func_word_num=func_word_num,
+                                max_phrase_len=max_phrase_len,  
                                 stop_word_num=stop_word_num)
                         else:
                             rule_flag = self._stricted_candidate_phrases_rules(
-                                candidate_phrase)
+                                candidate_phrase, max_phrase_len=max_phrase_len)
                         if not rule_flag:
                             continue
 
@@ -413,7 +416,8 @@ class ChineseKeyPhrasesExtractor(object):
                 sim_ratio = len(common_part) / len(candidate_info)
         return sim_ratio
         
-    def _loose_candidate_phrases_rules(self, candidate_phrase, 
+    def _loose_candidate_phrases_rules(self, candidate_phrase,
+                                       max_phrase_len=25, 
                                        func_word_num=1, stop_word_num=0):
         ''' 按照宽松规则筛选候选短语，对词性和停用词宽松 '''
         # 条件一：一个短语不能超过 12个 token
@@ -421,7 +425,7 @@ class ChineseKeyPhrasesExtractor(object):
             return False
 
         # 条件二：一个短语不能超过 25 个 char
-        if len(''.join([item[0] for item in candidate_phrase])) > 25:
+        if len(''.join([item[0] for item in candidate_phrase])) > max_phrase_len:
             return False
 
         # 条件三：一个短语中不能出现超过一个虚词
@@ -453,14 +457,15 @@ class ChineseKeyPhrasesExtractor(object):
             return False
         return True
     
-    def _stricted_candidate_phrases_rules(self, candidate_phrase):
+    def _stricted_candidate_phrases_rules(self, candidate_phrase, 
+                                          max_phrase_len=25):
         ''' 按照严格规则筛选候选短语，严格限制在名词短语 '''
         # 条件一：一个短语不能超过 12个 token
         if len(candidate_phrase) > 12:
             return False
 
         # 条件二：一个短语不能超过 25 个 char
-        if len(''.join([item[0] for item in candidate_phrase])) > 25:
+        if len(''.join([item[0] for item in candidate_phrase])) > max_phrase_len:
             return False
 
         # 条件三：短语必须是名词短语，不能有停用词
@@ -520,6 +525,6 @@ if __name__ == '__main__':
     print('key_phrases_1topic: ', key_phrases)
     key_phrases = ckpe_obj.extract_keyphrase(text, topic_theta=0)
     print('key_phrases_notopic: ', key_phrases)
-    key_phrases = ckpe_obj.extract_keyphrase(text, allow_length_weight=False, topic_theta=0.5)
+    key_phrases = ckpe_obj.extract_keyphrase(text, allow_length_weight=False, topic_theta=0.5, max_phrase_len=8)
     print('key_phrases_05topic: ', key_phrases)
 
