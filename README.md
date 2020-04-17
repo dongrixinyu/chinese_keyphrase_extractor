@@ -1,6 +1,6 @@
 # chinese_keyphrase_extractor (CKPE)
 
-一个从 **中文自然语言文本**  中抽取 **关键短语** 的工具  
+一个从 **中文自然语言文本**  中抽取 **关键短语** 的工具，只消耗 **35M** 内存
 A tool for automatic **keyphrase extraction** from **Chinese** text.
 
 ## 应用场景 Application scenario
