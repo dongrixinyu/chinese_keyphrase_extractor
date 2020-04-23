@@ -473,7 +473,7 @@ class ChineseKeyPhrasesExtractor(object):
             if item[1] not in self.stricted_pos_name:
                 return False
             if idx == 0:  # 初始词汇不可以是动词
-                if item[1] in ['v', 'vn', 'vd', 'vx']:
+                if item[1] in ['v', 'vd', 'vx']:  # 动名词不算在内
                     return False
             if idx == len(candidate_phrase) - 1:  # 结束词必须是名词
                 if item[1] in ['a', 'ad', 'vd', 'vx', 'v']:
