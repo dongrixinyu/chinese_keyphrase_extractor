@@ -3,6 +3,8 @@
 一个从 **中文自然语言文本**  中抽取 **关键短语** 的工具，只消耗 **35M** 内存   
 A tool for automatic **keyphrase extraction** from **Chinese** text.
 
+### 本项目即将迁移至 [jionlp](https://github.com/dongrixinyu/jionlp) 工具包，性能更好，速度更快哦~~~
+
 ## 应用场景 Application scenario
 
 #### 1.抽取关键短语
