@@ -96,6 +96,8 @@ key_phrases = ckpe_obj.extract_keyphrase(text, top_k=-1, specified_words=word_di
 print(key_phrases)
 ```
 
+#### [关键短语抽取技术总结](https://github.com/dongrixinyu/chinese_keyphrase_extractor/wiki/%E5%85%B3%E9%94%AE%E7%9F%AD%E8%AF%AD%E6%8A%BD%E5%8F%96%E6%8A%80%E6%9C%AF%E7%AE%80%E8%BF%B0)
+
 #### 计算主题向量
 
 - 工具包中默认的主题模型参数由100万篇各个类型的新闻文本，以及少部分社交媒体文本训练得到。
