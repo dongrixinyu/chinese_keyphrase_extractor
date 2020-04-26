@@ -96,7 +96,9 @@ key_phrases = ckpe_obj.extract_keyphrase(text, top_k=-1, specified_words=word_di
 print(key_phrases)
 ```
 
+#### 计算主题向量
 
+- 主题模型采用标准的 LDA 模型训练得到，工具包可选择 gensim、sklearn、familia 等，训练完毕后可以得到主题词的分布表示，进而可以得到每个词汇在不同主题下的分布。由此可以得出词汇的主题突出度。
 
 ## 新版 3.0 New Version 3.0
 - 从 jieba 分词器迁移到 pkuseg，因为 jieba 分词器过于粗放  
