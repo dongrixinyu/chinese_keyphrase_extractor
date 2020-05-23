@@ -97,6 +97,7 @@ print(key_phrases)
 ```
 
 #### [关键短语抽取技术总结](https://github.com/dongrixinyu/chinese_keyphrase_extractor/wiki/%E5%85%B3%E9%94%AE%E7%9F%AD%E8%AF%AD%E6%8A%BD%E5%8F%96%E6%8A%80%E6%9C%AF%E7%AE%80%E8%BF%B0)
+#### [关于如何自己根据特定语料训练模型，各个文件的计算方法说明](https://github.com/dongrixinyu/chinese_keyphrase_extractor/wiki/%E5%90%84%E4%B8%AA%E7%BB%9F%E8%AE%A1%E6%96%87%E4%BB%B6%E7%9A%84%E8%AE%A1%E7%AE%97%E6%96%B9%E6%B3%95)
 
 #### 计算主题向量
 
