@@ -4,7 +4,7 @@
 A tool for automatic **keyphrase extraction** from **Chinese** text.
 
 ### 本项目已经**ALREADY**迁移至 [JioNLP](https://github.com/dongrixinyu/JioNLP) 工具包，性能更好，速度更快哦~~~
-
+### 当前工具预料最新时间为 2020年6月。
 ## 应用场景 Application scenario
 
 #### 1.抽取关键短语
