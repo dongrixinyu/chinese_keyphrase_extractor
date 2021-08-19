@@ -50,9 +50,9 @@ In order to solve the above problem, I developed a keyphrase extractor based on 
 
 
 ```
-$ git clone https://github.com/dongrixinyu/chinese_keyphrase_extractor
-$ cd ./chinese_keyphrase_extractor
-$ pip install .
+git clone https://github.com/dongrixinyu/chinese_keyphrase_extractor
+cd ./chinese_keyphrase_extractor
+pip install .
 ```
 
 
