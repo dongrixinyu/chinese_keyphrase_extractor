@@ -3,7 +3,7 @@
 一个从 **中文自然语言文本**  中抽取 **关键短语** 的工具，只消耗 **35M** 内存   
 A tool for automatic **keyphrase extraction** from **Chinese** text.
 
-### [CKPE在线版](http://182.92.160.94:16666/#/extract_keyphrase)，可以直接进入试用关键短语抽取功能。
+### ⭐[CKPE在线版](http://182.92.160.94:16666/#/extract_keyphrase)，可以直接进入试用关键短语抽取功能。
 ### 本项目已经**ALREADY**迁移至 [JioNLP](https://github.com/dongrixinyu/JioNLP) 工具包，性能更好，速度更快哦~~~
 ### 当前工具语料最新时间为 2020年6月。此后的出现的新词不容易识别，须根据新语料处理。
 ## 应用场景 Application scenario
