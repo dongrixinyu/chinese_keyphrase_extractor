@@ -49,11 +49,15 @@ In order to solve the above problem, I developed a keyphrase extractor based on 
 - python3 only supported  
 - Automatic installation of pkuseg dependency package  
 
-
 ```
 git clone https://github.com/dongrixinyu/chinese_keyphrase_extractor
 cd ./chinese_keyphrase_extractor
 pip install .
+```
+
+- JioNLP 同样支持短语抽取，工具包安装方法：
+```
+$ pip install jionlp
 ```
 
 
@@ -79,6 +83,19 @@ key_phrases = ckpe_obj.extract_keyphrase(text)
 print(key_phrases)
 print(ckpe_obj.extract_keyphrase.__doc__)
 ```
+
+- JioNLP 工具包调用方法：
+```
+>>> import jionlp as jio
+>>> text = '朝鲜确认金正恩出访俄罗斯 将与普京举行会谈...'
+>>> key_phrases = jio.keyphrase.extract_keyphrase(text)
+>>> print(key_phrases)
+>>> print(jio.keyphrase.extract_keyphrase.__doc__)
+
+# ['俄罗斯克里姆林宫', '邀请金正恩访俄', '举行会谈',
+#  '朝方转交普京', '最高司令官金正恩']
+```
+
 
 ##### 2.扩展类型短语
 ```
