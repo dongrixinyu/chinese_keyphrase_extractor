@@ -55,7 +55,7 @@ cd ./chinese_keyphrase_extractor
 pip install .
 ```
 
-- JioNLP 同样支持短语抽取，工具包安装方法：
+- [JioNLP](https://github.com/dongrixinyu/JioNLP) 同样支持短语抽取，工具包安装方法：
 ```
 $ pip install jionlp
 ```
@@ -84,7 +84,7 @@ print(key_phrases)
 print(ckpe_obj.extract_keyphrase.__doc__)
 ```
 
-- JioNLP 工具包调用方法：
+- **JioNLP 工具包调用方法**：
 ```
 >>> import jionlp as jio
 >>> text = '朝鲜确认金正恩出访俄罗斯 将与普京举行会谈...'
