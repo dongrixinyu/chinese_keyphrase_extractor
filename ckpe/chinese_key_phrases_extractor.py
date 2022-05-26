@@ -10,6 +10,7 @@ import re
 import pdb
 import json
 import math
+from collections import Counter
 import pkuseg
 
 import numpy as np
