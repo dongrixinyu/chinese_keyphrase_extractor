@@ -228,13 +228,8 @@ class ChineseKeyPhrasesExtractor(object):
 
             # step2: 计算词频
             total_length = len(counter_segs_list)
-            freq_dict = dict()
-            for word_pos in counter_segs_list:
-                word, pos = word_pos
-                if word in freq_dict:
-                    freq_dict[word][1] += 1
-                else:
-                    freq_dict.update({word: [pos, 1]})
+            freq_counter = Counter([item[0] for item in counter_segs_list])
+            freq_dict = dict(freq_counter.most_common())
 
             # step3: 计算每一个词的权重
             sentences_segs_weights_list = list()
@@ -248,13 +243,13 @@ class ChineseKeyPhrasesExtractor(object):
                         else:
                             if word in specified_words:  # 为词计算权重
                                 if bias is None:
-                                    weight = freq_dict[word][1] * self.idf_dict.get(
+                                    weight = freq_dict[word] * self.idf_dict.get(
                                         word, self.median_idf) / total_length + 1 / specified_words[word]
                                 else:
-                                    weight = freq_dict[word][1] * self.idf_dict.get(
+                                    weight = freq_dict[word] * self.idf_dict.get(
                                         word, self.median_idf) / total_length + bias
                             else:
-                                weight = freq_dict[word][1] * self.idf_dict.get(
+                                weight = freq_dict[word] * self.idf_dict.get(
                                     word, self.median_idf) / total_length
                     else:
                         weight = 0.0
