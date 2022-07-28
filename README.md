@@ -4,6 +4,7 @@
 A tool for automatic **keyphrase extraction** from **Chinese** text.
 
 ### ⭐[CKPE在线版](http://www.jionlp.com/jionlp_online/extract_keyphrase)，可以直接进入试用关键短语抽取功能。
+### 欢迎关注wx公众号“一个Bug”，获取该功能更多相关资讯，并加入“NLP 交流群”
 ### 本项目已经**ALREADY**迁移至 [JioNLP](https://github.com/dongrixinyu/JioNLP) 工具包，性能更好，速度更快哦~~~
 ### 当前工具语料最新时间为 2020年6月。此后的出现的新词不容易识别，须根据新语料处理。
 ## 应用场景 Application scenario
