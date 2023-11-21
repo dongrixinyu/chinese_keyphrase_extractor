@@ -167,7 +167,7 @@ print(key_phrases)
 
 如果觉得方便好用，可以请我喝杯咖啡 (●'◡'●)  也可以关注wx公众号“JioNLP”获取更多资料。
 
-![image](../../blob/master/payment_code.jpg)
+![image](https://github.com/dongrixinyu/chinese_keyphrase_extractor/blob/master/payment_code.jpg)
 
 
 
