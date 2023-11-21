@@ -165,7 +165,7 @@ print(key_phrases)
 ## 我的窝 My blog  
 
 
-如果觉得方便好用，可以请我喝杯咖啡 (●'◡'●)  也可以关注wx公众号“一个Bug”获取更多资料。
+如果觉得方便好用，可以请我喝杯咖啡 (●'◡'●)  也可以关注wx公众号“JioNLP”获取更多资料。
 
 ![image](../../blob/master/payment_code.jpg)
 
